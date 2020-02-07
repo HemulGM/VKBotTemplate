@@ -11,6 +11,7 @@ object FormMain: TFormMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -38,6 +39,8 @@ object FormMain: TFormMain
     BaseURL = 'https://api.vk.com/method'
     OnAuth = VKAuth
     OnLogin = VKLogin
+    OnLog = VKLog
+    OnError = VKError
     Left = 288
     Top = 160
   end
