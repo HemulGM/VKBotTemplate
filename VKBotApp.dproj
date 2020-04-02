@@ -102,6 +102,7 @@
             <Form>FormMain</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\VK_API\Entity\VK.Entity.Video.Save.pas"/>
         <None Include="token.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
