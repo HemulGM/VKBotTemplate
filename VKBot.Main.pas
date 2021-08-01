@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   VK.UserEvents, VK.Components, VK.GroupEvents, VK.API, VK.Entity.Message,
-  VK.Entity.ClientInfo, Vcl.StdCtrls, VK.Types, VK.Entity.User, Vcl.ExtCtrls,
+  VK.Entity.ClientInfo, Vcl.StdCtrls, VK.Types, VK.Entity.Profile, Vcl.ExtCtrls,
   System.Generics.Collections;
 
 type
@@ -87,11 +87,11 @@ end;
 
 procedure TFormMain.VkGroupEventsMessageNew(Sender: TObject; GroupId: Integer; Message: TVkMessage; ClientInfo: TVkClientInfo; EventId: string);
 var
-  User, Member: TVkUser;
+  User, Member: TVkProfile;
   FAnswer: string;
 begin
-  if not VK.Users.Get(User, Message.FromId, 'domain') then
-    User := TVkUser.Create
+  if not VK.Users.Get(User, Message.FromId, [TVkProfileField.Domain]) then
+    User := TVkProfile.Create
   else
     Memo1.Lines.Add(User.ToJsonString);
 
@@ -175,7 +175,7 @@ end;
 
 procedure TFormMain.VKAuth(Sender: TObject; Url: string; var Token: string; var TokenExpiry: Int64; var ChangePasswordHash: string);
 begin
-  {$INCLUDE token.inc}
+  //{$INCLUDE token.inc}
   //Token := '<здесь токен>';
 end;
 
@@ -186,14 +186,16 @@ end;
 
 procedure TFormMain.SendStart(PeerId: Integer);
 var
-  Keys: TVkKeyboardConstructor;
+  Keys: TVkKeyboard;
 begin
-  Keys.SetOneTime(True);
-  Keys.AddButtonText(0, 'Погода', 'weather', 'positive');
-  Keys.AddButtonText(0, 'Отмена', 'cancel', 'negative');
-  Keys.AddButtonText(1, 'Информация', 'info', 'primary');
-  Keys.AddButtonText(1, 'Команды', 'commands', 'secondary');
-  VK.Messages.New.PeerId(PeerId).Keyboard(Keys).Message('Выбери вариант').Send.Free;
+ { Keys.OneTime := True;
+  Keys.AddButtonLine;
+  Keys.AddButtonLine;
+  Keys.Buttons[0].CreateText('Погода', 'weather', 'positive');
+  Keys.Buttons[0].CreateText('Отмена', 'cancel', 'negative');
+  Keys.Buttons[1].CreateText('Информация', 'info', 'primary');
+  Keys.Buttons[1].CreateText('Команды', 'commands', 'secondary');
+  VK.Messages.New.PeerId(PeerId).Keyboard(Keys).Message('Выбери вариант').Send.Free;   }
 end;
 
 function TFormMain.FindRandomPic(Path: string; var FileName: string): Boolean;
