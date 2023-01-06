@@ -97,9 +97,9 @@ begin
 
   if Assigned(Message.action) then
   begin
-    if (Message.action.&type = 'chat_invite_user') or (Message.action.&type = 'chat_invite_user_by_link') then
+    if Message.action.&type in [TVkMessageActionType.ChatInviteUser, TVkMessageActionType.ChatInviteUserByLink] then
     begin
-      if VK.Users.Get(Member, Message.Action.MemberId, 'domain') then
+      if VK.Users.Get(Member, Message.Action.MemberId, [TVkProfileField.Domain]) then
       begin
         VK.Messages.New.PeerId(Message.PeerId).Message('Встречайте новичка, черти!').Send.Free;
 
@@ -238,26 +238,20 @@ var
   Url: string;
   Response: TVkPhotoUploadResponse;
   Photos: TVkPhotos;
+  Attach: TAttachment;
 begin
-  if VK.Photos.GetMessagesUploadServer(Url, PeerId) then
+  if VK.Photos.UploadForMessage(Photos, PeerId, [FileName]) then
   begin
-    if VK.Uploader.UploadPhotos(Url, FileName, Response) then
+    Attach := TAttachment.Photo(Photos.Items[0].OwnerId, Photos.Items[0].Id, Photos.Items[0].AccessKey);
+    if ReplyTo <> 0 then
     begin
-      if VK.Photos.SaveMessagesPhoto(Response, Photos) then
-      begin
-        FileName := CreateAttachment('photo', Photos.Items[0].OwnerId, Photos.Items[0].Id, Photos.Items[0].AccessKey);
-        if ReplyTo <> 0 then
-        begin
-          VK.Messages.New.PeerId(PeerId).ReplyTo(ReplyTo).Attachment([FileName]).Send.Free;
-        end
-        else
-        begin
-          VK.Messages.New.PeerId(PeerId).Attachment([FileName]).Send.Free;
-        end;
-        Photos.Free;
-      end;
-      Response.Free;
+      VK.Messages.New.PeerId(PeerId).ReplyTo(ReplyTo).Attachment(Attach).Send.Free;
+    end
+    else
+    begin
+      VK.Messages.New.PeerId(PeerId).Attachment(Attach).Send.Free;
     end;
+    Photos.Free;
   end;
 end;
 

@@ -53,20 +53,21 @@ object FormMain: TFormMain
     WordWrap = False
   end
   object VK: TVK
-    EndPoint = 'https://oauth.vk.com/authorize'
-    Permissions = 'groups,friends,wall,photos,video,docs,notes,market'
-    APIVersion = '5.103'
     BaseURL = 'https://api.vk.com/method'
+    EndPoint = 'https://oauth.vk.com/authorize'
     OnAuth = VKAuth
-    OnLogin = VKLogin
-    OnLog = VKLog
     OnError = VKError
-    Left = 288
+    OnLog = VKLog
+    OnLogin = VKLogin
+    Permissions = [Friends, Photos, Video, Notes, Wall, Docs, Groups, Market]
+    Proxy.Port = 0
+    Left = 248
     Top = 161
   end
   object VkGroupEvents: TVkGroupEvents
-    VK = VK
     OnMessageNew = VkGroupEventsMessageNew
+    Version = '3'
+    VK = VK
     Left = 344
     Top = 161
   end
